@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Config;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Iks_ChatColors;
@@ -32,18 +33,19 @@ public class Iks_ChatColors : BasePlugin, IPluginConfig<ChatConfig>
     public static char Magenta = '\x0E';
     public static char LightRed = '\x0F';
     public static char Orange = '\x10';
-    
+
     public override string ModuleName { get; } = "Iks_ChatColors";
     public override string ModuleVersion { get; } = "1.0.0";
     public override string ModuleAuthor { get; } = "iks";
 
     public TagObj[] Tags;
-    
+
     public ChatConfig Config { get; set; }
 
     public override void Load(bool hotReload)
     {
         AddCommandListener("say", (player, info) => OnSay(player, info));
+        AddCommandListener("say_team", (player, info) => OnSayTeam(player, info));
     }
 
 
@@ -51,67 +53,169 @@ public class Iks_ChatColors : BasePlugin, IPluginConfig<ChatConfig>
     {
         config = ConfigManager.Load<ChatConfig>(ModuleName);
         Tags = config.Tags;
-        foreach (var Tag in Tags)
-        {
-            Console.WriteLine("========================");
-            Console.WriteLine($"TagKey: {Tag.TagKey}");
-            Console.WriteLine($"Tag: {Tag.Tag}");
-            Console.WriteLine($"TagColor: {Tag.GetTagColor()}");
-            Console.WriteLine($"ChatColor: {Tag.GetChatColor()}");
-            Console.WriteLine($"NameColor: {Tag.GetNameColor()}");
-            Console.WriteLine("========================");
-        }
         Config = config;
     }
-    
+
     public HookResult OnSay(CCSPlayerController? controller, CommandInfo info)
     {
         if (controller == null) return HookResult.Continue;
         string PlayerTeamColor = TeamColor(controller.TeamNum);
+        SteamID sid = new SteamID(controller.SteamID);
+        string? pGroup = null;
+        foreach (var group in AdminManager.GetPlayerAdminData(sid).Groups)
+        {
+            pGroup = group;
+        }
 
         foreach (var tag in Tags)
         {
+            AdminManager.LoadAdminGroups("admin_groups.json");
             if (tag.TagKey.StartsWith("#"))
             {
-                if (AdminManager.PlayerInGroup(controller, tag.TagKey))
+                if (pGroup == tag.TagKey)
                 {
-                    Server.PrintToChatAll($" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                    Server.PrintToChatAll(
+                        $" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
                     return HookResult.Handled;
-                };
+                }
+
+                
             }
+
             if (tag.TagKey.StartsWith("@"))
             {
-                if (AdminManager.PlayerHasPermissions(controller, tag.TagKey))
+                if (pGroup == tag.TagKey)
                 {
-                    Server.PrintToChatAll($" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                    Server.PrintToChatAll(
+                        $" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
                     return HookResult.Handled;
-                };
+                }
+
+                
             }
+
             if (tag.TagKey == "CT" && controller.TeamNum == 3)
             {
-                Server.PrintToChatAll($" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                Server.PrintToChatAll(
+                    $" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
                 return HookResult.Handled;
             }
+
             if (tag.TagKey == "T" && controller.TeamNum == 2)
             {
-                Server.PrintToChatAll($" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                Server.PrintToChatAll(
+                    $" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
                 return HookResult.Handled;
             }
+
             if (tag.TagKey == "SPEC" && controller.TeamNum == 1)
             {
-                Server.PrintToChatAll($" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                Server.PrintToChatAll(
+                    $" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
                 return HookResult.Handled;
             }
+
             if (tag.TagKey == "everyone")
             {
-                Server.PrintToChatAll($" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                Server.PrintToChatAll(
+                    $" {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
                 return HookResult.Handled;
             }
         }
-        
-        
+
+
         return HookResult.Continue;
     }
+
+    public HookResult OnSayTeam(CCSPlayerController? controller, CommandInfo info)
+    {
+        if (controller == null) return HookResult.Continue;
+        string teamString;
+        switch (controller.TeamNum)
+        {
+            case 1:
+                teamString = $" {ChatColors.White}[SPEC TEAM]";
+                break;
+            case 2:
+                teamString = $" {ChatColors.Yellow}[T TEAM]";
+                break;
+            case 3:
+                teamString = $" {ChatColors.BlueGrey}[CT TEAM]";
+                break;
+            default:
+                teamString = $" {ChatColors.White}[TO TEAM]";
+                break;
+        }
+        string PlayerTeamColor = TeamColor(controller.TeamNum);
+        SteamID sid = new SteamID(controller.SteamID);
+        string? pGroup = null;
+        foreach (var group in AdminManager.GetPlayerAdminData(sid).Groups)
+        {
+            pGroup = group;
+        }
+
+        foreach (var tag in Tags)
+        {
+            var players = Utilities.GetPlayers();
+            foreach (var player in players)
+            {
+                if (player.TeamNum == controller.TeamNum)
+                {
+                    if (tag.TagKey.StartsWith("#"))
+                    {
+                        if (pGroup == tag.TagKey)
+                        {
+                            Server.PrintToChatAll(
+                                $"{teamString} {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                            return HookResult.Handled;
+                        }
+                    }
+
+                    if (tag.TagKey.StartsWith("@"))
+                    {
+                        if (pGroup == tag.TagKey)
+                        {
+                            Server.PrintToChatAll(
+                                $"{teamString} {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                            return HookResult.Handled;
+                        }
+                    }
+
+                    if (tag.TagKey == "CT" && controller.TeamNum == 3)
+                    {
+                        Server.PrintToChatAll(
+                            $"{teamString} {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                        return HookResult.Handled;
+                    }
+
+                    if (tag.TagKey == "T" && controller.TeamNum == 2)
+                    {
+                        Server.PrintToChatAll(
+                            $"{teamString} {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                        return HookResult.Handled;
+                    }
+
+                    if (tag.TagKey == "SPEC" && controller.TeamNum == 1)
+                    {
+                        Server.PrintToChatAll(
+                            $"{teamString} {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                        return HookResult.Handled;
+                    }
+
+                    if (tag.TagKey == "everyone")
+                    {
+                        Server.PrintToChatAll(
+                            $"{teamString} {(tag.TagColor == "Team" ? PlayerTeamColor : tag.GetTagColor())}{tag.Tag} {(tag.NameColor == "Team" ? PlayerTeamColor : tag.GetNameColor())}{controller.PlayerName}{White}: {(tag.ChatColor == "Team" ? PlayerTeamColor : tag.GetChatColor())}{info.GetArg(1)}");
+                        return HookResult.Handled;
+                    }
+                }
+            }
+        }
+
+
+        return HookResult.Continue;
+    }
+
     [ConsoleCommand("css_getcolors")]
     public void OnGetColors(CCSPlayerController? controller, CommandInfo info)
     {
@@ -137,7 +241,7 @@ public class Iks_ChatColors : BasePlugin, IPluginConfig<ChatConfig>
         controller.PrintToChat($" {LightRed}LightRed");
         controller.PrintToChat($" {Orange}Orange");
     }
-    
+
     private string TeamColor(int teamNum)
     {
         string teamColor;
@@ -157,7 +261,7 @@ public class Iks_ChatColors : BasePlugin, IPluginConfig<ChatConfig>
 
         return teamColor;
     }
-    
+
     [RequiresPermissions("@css/root")]
     [ConsoleCommand("css_chatcolors_reload")]
     public void OnReloadCommand(CCSPlayerController? controller, CommandInfo info)
