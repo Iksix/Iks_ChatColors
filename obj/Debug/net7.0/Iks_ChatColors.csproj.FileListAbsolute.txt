@@ -1,0 +1,12 @@
+D:\__plgns\Iks_ChatColors\bin\Debug\net7.0\Iks_ChatColors.deps.json
+D:\__plgns\Iks_ChatColors\bin\Debug\net7.0\Iks_ChatColors.dll
+D:\__plgns\Iks_ChatColors\bin\Debug\net7.0\Iks_ChatColors.pdb
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\Iks_ChatColors.csproj.AssemblyReference.cache
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\Iks_ChatColors.GeneratedMSBuildEditorConfig.editorconfig
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\Iks_ChatColors.AssemblyInfoInputs.cache
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\Iks_ChatColors.AssemblyInfo.cs
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\Iks_ChatColors.csproj.CoreCompileInputs.cache
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\Iks_ChatColors.dll
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\refint\Iks_ChatColors.dll
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\Iks_ChatColors.pdb
+D:\__plgns\Iks_ChatColors\obj\Debug\net7.0\ref\Iks_ChatColors.dll
