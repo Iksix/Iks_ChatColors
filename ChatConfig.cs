@@ -13,6 +13,14 @@ public class ChatConfig : IBasePluginConfig
     [JsonPropertyName("TeamColorT")] public string TeamColorT { get; set; } = "Yellow";
     [JsonPropertyName("TeamColorCT")] public string TeamColorCT { get; set; } = "BlueGrey";
     [JsonPropertyName("TeamColorSpec")] public string TeamColorSpec { get; set; } = "BlueGrey";
+    
+    [JsonPropertyName("TeamChatTagAllCT")] public string TeamChatTagAllCT { get; set; } = "[CT]";
+    [JsonPropertyName("TeamChatTagAllCTColor")] public string TeamChatTagAllCTColor { get; set; } = "BlueGrey";
+    [JsonPropertyName("TeamChatTagAllT")] public string TeamChatTagAllT { get; set; } = "[T]";
+    [JsonPropertyName("TeamChatTagAllTColor")] public string TeamChatTagAllTColor { get; set; } = "Orange";
+    [JsonPropertyName("TeamChatTagAllSpec")] public string TeamChatTagAllSpec { get; set; } = "[SPEC]";
+    [JsonPropertyName("TeamChatTagAllSpecColor")] public string TeamChatTagAllSpecColor { get; set; } = "Purple";
+
     [JsonPropertyName("Tags")] public TagObj[] Tags { get; set; } = { new TagObj("everyone", "[Player]", "Green","Green", "Green")  };
     public int Version { get; set; }
 }
